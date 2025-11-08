@@ -33,8 +33,8 @@
         ];
       };
 
-      #clang-unwrapped provides 'clang' but not 'cc'
-      #without this link, rustc finds the wrapped cc and
+      #The default cc is the wrapped clang from nix.
+      #Without this link, rustc finds the wrapped cc and
       #that adds macos specific flags which conflict when
       #cross-compiling for iphone
       cclink = pkgs.stdenv.mkDerivation {
@@ -44,36 +44,31 @@
         buildCommand = ''
           mkdir -p $out/bin
           cd $out/bin
-          ln -s "${pkgs.llvmPackages.clang-unwrapped}/bin/clang" cc
+          ln -s "${xcode}/bin/clang" cc
         '';
       };
 
       # Create symlinks to the system XCode installation
-      xcodeenv = import (nixpkgs + "/pkgs/development/mobile/xcodeenv") {
+      xcode = (import (nixpkgs + "/pkgs/development/mobile/xcodeenv") {
         inherit (pkgs) callPackage;
-      };
-      xcode = (xcodeenv.composeXcodeWrapper { });
+      }).composeXcodeWrapper { };
     in {
-      devShells.aarch64-darwin.default =
-        (pkgs.mkShellNoCC.override { stdenv = pkgs.llvmPackages.stdenv; }) {
-          strictDeps = true;
-
-          packages = with pkgs; [
-            xcode
-            just
-            bacon
-            dioxus-cli
-            rustToolChain
-            llvmPackages.clang-unwrapped
-            cclink
-          ];
-          shellHook = ''
-            RUST_SRC_PATH="${pkgs.rustToolChain}/lib/rustlib/src/rust/library";
-            #Use the system installation of the SDKs, not the nix-installed version
-            unset DEVELOPER_DIR
-            unset SDKROOT
-          '';
-        };
+      devShells.aarch64-darwin.default = pkgs.mkShell {
+        packages = with pkgs; [
+          xcode
+          just
+          bacon
+          dioxus-cli
+          rustToolChain
+          cclink
+        ];
+        shellHook = ''
+          RUST_SRC_PATH="${pkgs.rustToolChain}/lib/rustlib/src/rust/library";
+          #Use the system installation of the SDKs, not the nix-installed version
+          unset DEVELOPER_DIR
+          unset SDKROOT
+        '';
+      };
     };
 }
 
