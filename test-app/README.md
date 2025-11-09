@@ -15,11 +15,37 @@ project/
 Run the following command in the root of your project to start developing with the default platform:
 
 ```bash
-dx serve --platform mobile
+dx serve --platform ios
 ```
 
-To run for a different platform, use the `--platform platform` flag. E.g.
+To build a release IPA for signing:
+
 ```bash
-dx serve --platform desktop
+dx bundle --platform ios --release --device true
+edit target/dx/test-app/release/ios/test-app.app/info.plist
+set CFBundleIdentifier to 'uk.org.darach.TestApp'
 ```
 
+To sign the IPA for copying to the phone
+```bash
+brew install ios-app-signer
+open /Applications/iOS App Signer.app
+```
+Input file: the app - test-app/target/dx/test-app/release/ios/TestApp.app
+Signing Certificate: automatic
+Provisioning Profile: Choose Custom File / ~/Libary/Developer/XCode/UserData/Provisioning Profiles/
+
+Installing on the iphone
+Back in XCode, press cmd-shift-2 to get the device list and drag the ipa file over
+
+
+# Provisioning profile
+To set up a signing profile in XCode (only required once)
+1. Open a new XCode project, use all defaults
+1. Set the app bundle id to match this app (uk.org.darach.TestApp)
+1. On the projects settings page set the minimum ios version to 18.6
+1. Set up a team on the signing panel of the project
+1. Build the app, which should create a signing profile in ~/Library/Developer/Xcode/UserData/Provisioning\ Profiles like d66bb841-409c-4dce-a546-f2d148793109.mobileprovision
+
+# References
+Notes on signing the app - https://github.com/DioxusLabs/dioxus/discussions/3545
