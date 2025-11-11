@@ -16,9 +16,26 @@
         "type": "github"
       }
     },
+    "nixpkgs-dioxus": {
+      "locked": {
+        "lastModified": 1762458819,
+        "narHash": "sha256-CXC+VFPP3Gs28rpCG1h0Dr/3/VyWfud2oxjNbdfCvq8=",
+        "owner": "CathalMullan",
+        "repo": "nixpkgs",
+        "rev": "d494dc5136a457cbc780ccb10ac58989b7667a40",
+        "type": "github"
+      },
+      "original": {
+        "owner": "CathalMullan",
+        "ref": "dioxus-cli-v0.7.0",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "nixpkgs": "nixpkgs",
+        "nixpkgs-dioxus": "nixpkgs-dioxus",
         "rust-overlay": "rust-overlay"
       }
     },

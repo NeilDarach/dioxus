@@ -1,20 +1,25 @@
 {
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs-dioxus.url = "github:CathalMullan/nixpkgs/dioxus-cli-v0.7.0";
     rust-overlay = {
       url = "github:oxalica/rust-overlay";
       inputs = { nixpkgs.follows = "nixpkgs"; };
     };
   };
 
-  outputs = inputs@{ nixpkgs, rust-overlay, ... }:
+  outputs = inputs@{ nixpkgs, nixpkgs-dioxus, rust-overlay, ... }:
     let
       pkgs = import inputs.nixpkgs {
         #This is only valid for Mac installations
         system = "aarch64-darwin";
         overlays = [
           (import rust-overlay)
-          (prev: final: {
+          (final: prev: {
+            inherit (nixpkgs-dioxus.legacyPackages.${prev.stdenv.hostPlatform.system})
+              dioxus-cli;
+          })
+          (final: prev: {
             rustToolChain = (prev.rust-bin.stable.latest.default.override {
               extensions = [ "rustfmt" "rust-src" ];
               targets = [
