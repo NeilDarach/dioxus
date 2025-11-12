@@ -1,13 +1,16 @@
 use dioxus::prelude::*;
 
+static CSS: Asset = asset!("/assets/main.css");
+
 #[component]
 fn App() -> Element {
     let mut score_a: Signal<u32> = use_signal(|| 0);
     let mut score_b: Signal<u32> = use_signal(|| 0);
     rsx! {
-        Counter { name: "Neil".to_string(), score: score_a , up: move |i| score_a += i, down: move |(i,v)| if v > 0 { score_a -= i } }
+        document::Stylesheet { href: CSS }
+        div { Counter { name: "Neil".to_string(), score: score_a , up: move |(i,v)| if v+i > 121 { *score_a.write() = 121 } else { score_a += i }, down: move |(i,v)| if v > 0 { score_a -= i } } }
         Reset { scores: vec![score_a, score_b], onclick: move |_| { *score_a.write() = 0; *score_b.write() = 0 } }
-        div { transform: "rotate(180deg)", Counter { name: "Marion".to_string(), score: score_b , up: move |i| score_b += i, down: move |(i,v)| if v > 0 { score_b -= i } } }
+        div { transform: "rotate(180deg)", Counter { name: "Marion".to_string(), score: score_b , up: move |(i,v)| if v+i > 121 { *score_b.write() = 121 } else { score_b += i }, down: move |(i,v)| if v > 0 { score_b -= i } } }
 
     }
 }
@@ -16,18 +19,19 @@ fn App() -> Element {
 fn Counter(
     name: String,
     score: Signal<u32>,
-    up: EventHandler<u32>,
+    up: EventHandler<(u32, u32)>,
     down: EventHandler<(u32, u32)>,
 ) -> Element {
+    let current = score();
     rsx! {
-           div { "align": "center", "Counter for {name}"
+           div { class: "title", "Counter for {name}"
            br { }
-           "{score}"
+           span { class: "score", "{score}"}
            br { }
-           button { onclick: move |_| up.call(10), "+10" }
-           button { onclick: move |_| up.call(5), "+5" }
-           button { onclick: move |_| up.call(1), "+1" }
-           button { onclick: move |_| down.call((1,score())), "-1" }
+           button { class: "action", onclick: move |_| up.call((10,current)), "+10" }
+           button { class: "action", onclick: move |_| up.call((5,current)), "+5" }
+           button { class: "action", onclick: move |_| up.call((1,current)), "+1" }
+           button { class: "action", onclick: move |_| down.call((1,current)), "-1" }
     }
        }
 }
@@ -35,7 +39,7 @@ fn Counter(
 #[component]
 fn Reset(scores: Vec<Signal<u32>>, onclick: EventHandler<MouseEvent>) -> Element {
     rsx! {
-          div { "align": "center", button { onclick , "Reset" } }
+          div { button { class: "reset", onclick , "Reset" } }
     }
 }
 

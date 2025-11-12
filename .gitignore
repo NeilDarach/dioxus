@@ -1,5 +1,6 @@
 .direnv
 .DS_Store
+**/*.ipa
 
 
 # Added by cargo
