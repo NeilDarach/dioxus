@@ -1,71 +1,30 @@
 {
   "nodes": {
-    "dioxus": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "rust-overlay": "rust-overlay"
-      },
-      "locked": {
-        "dir": "dioxus",
-        "lastModified": 1762940370,
-        "narHash": "sha256-Lpbil2NdtbnbuKUgcovnanT5YFUFQnqex3SBSRHa6BI=",
-        "owner": "NeilDarach",
-        "repo": "flakes",
-        "rev": "6c25b97d4a1a4f0be545f20edcfb3bc7d437af89",
-        "type": "github"
-      },
-      "original": {
-        "dir": "dioxus",
-        "owner": "NeilDarach",
-        "repo": "flakes",
-        "type": "github"
-      }
-    },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1762111121,
-        "narHash": "sha256-4vhDuZ7OZaZmKKrnDpxLZZpGIJvAeMtK6FKLJYUtAdw=",
+        "lastModified": 1762756533,
+        "narHash": "sha256-HiRDeUOD1VLklHeOmaKDzf+8Hb7vSWPVFcWwaTrpm+U=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "b3d51a0365f6695e7dd5cdf3e180604530ed33b4",
+        "rev": "c2448301fb856e351aab33e64c33a3fc8bcf637d",
         "type": "github"
       },
       "original": {
         "owner": "NixOS",
-        "ref": "nixos-unstable",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
-    "nixpkgs-dioxus": {
-      "locked": {
-        "lastModified": 1762458819,
-        "narHash": "sha256-CXC+VFPP3Gs28rpCG1h0Dr/3/VyWfud2oxjNbdfCvq8=",
-        "owner": "CathalMullan",
-        "repo": "nixpkgs",
-        "rev": "d494dc5136a457cbc780ccb10ac58989b7667a40",
-        "type": "github"
-      },
-      "original": {
-        "owner": "CathalMullan",
-        "ref": "dioxus-cli-v0.7.0",
+        "ref": "nixos-25.05",
         "repo": "nixpkgs",
         "type": "github"
       }
     },
     "root": {
       "inputs": {
-        "dioxus": "dioxus",
         "nixpkgs": "nixpkgs",
-        "nixpkgs-dioxus": "nixpkgs-dioxus"
+        "rust-overlay": "rust-overlay"
       }
     },
     "rust-overlay": {
       "inputs": {
         "nixpkgs": [
-          "dioxus",
           "nixpkgs"
         ]
       },
