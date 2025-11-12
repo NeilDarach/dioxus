@@ -22,7 +22,7 @@
             let rustToolChain = prev.rust-bin.stable.latest.default;
             in {
               rustToolChain = (rustToolChain.override {
-                extensions = [ "rustfmt" "rust-src" ];
+                extensions = [ "rustfmt" "rust-src" "rust-analyzer" "clippy" ];
                 targets = [
                   "wasm32-unknown-unknown"
                   "aarch64-apple-ios"
