@@ -9,11 +9,11 @@
       },
       "locked": {
         "dir": "dioxus",
-        "lastModified": 1762951417,
-        "narHash": "sha256-JJM6Eus5G4xkjOEFjUU8j23i4qTbgVUu1XQ6fQz2aeI=",
+        "lastModified": 1762952049,
+        "narHash": "sha256-vpazzx8qKFrUo7pI8GKDo50XKzNNtYE8lFH3Skm/OjQ=",
         "owner": "NeilDarach",
         "repo": "flakes",
-        "rev": "8b7dbc416aebe6f5e55bba9a8522c0ad0174178f",
+        "rev": "cc40c577f63bf6c135a8c74584dd8606546de464",
         "type": "github"
       },
       "original": {

@@ -25,8 +25,7 @@
       };
     in {
       devShells.${system}.default = let applyDioxus = dioxus.addToShell pkgs;
-      in pkgs.mkShell
-      (applyDioxus { packages = with pkgs; [ rust-analyzer just bacon ]; });
+      in pkgs.mkShell (applyDioxus { packages = with pkgs; [ just bacon ]; });
     };
 }
 
