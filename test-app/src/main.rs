@@ -8,9 +8,9 @@ fn App() -> Element {
     let mut score_b: Signal<u32> = use_signal(|| 0);
     rsx! {
         document::Stylesheet { href: CSS }
-        div { Counter { name: "Neil".to_string(), score: score_a , up: move |(i,v)| if v+i > 121 { *score_a.write() = 121 } else { score_a += i }, down: move |(i,v)| if v > 0 { score_a -= i } } }
-        Reset { scores: vec![score_a, score_b], onclick: move |_| { *score_a.write() = 0; *score_b.write() = 0 } }
         div { transform: "rotate(180deg)", Counter { name: "Marion".to_string(), score: score_b , up: move |(i,v)| if v+i > 121 { *score_b.write() = 121 } else { score_b += i }, down: move |(i,v)| if v > 0 { score_b -= i } } }
+        Reset { scores: vec![score_a, score_b], onclick: move |_| { *score_a.write() = 0; *score_b.write() = 0 } }
+        div { Counter { name: "Neil".to_string(), score: score_a , up: move |(i,v)| if v+i > 121 { *score_a.write() = 121 } else { score_a += i }, down: move |(i,v)| if v > 0 { score_a -= i } } }
 
     }
 }
