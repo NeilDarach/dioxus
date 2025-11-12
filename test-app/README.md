@@ -12,6 +12,16 @@ project/
 
 ### Serving Your App
 
+Start the simulator
+```bash
+open /Applications/Xcode.app/Contents/Developer/Applications/Simulator.app
+```
+
+Boot a phone
+```bash
+xcrun simctl boot "iPhone 16 Pro"
+```
+
 Run the following command in the root of your project to start developing with the default platform:
 
 ```bash
