@@ -1,5 +1,28 @@
 {
   "nodes": {
+    "dioxus": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "rust-overlay": "rust-overlay"
+      },
+      "locked": {
+        "dir": "dioxus",
+        "lastModified": 1762940370,
+        "narHash": "sha256-Lpbil2NdtbnbuKUgcovnanT5YFUFQnqex3SBSRHa6BI=",
+        "owner": "NeilDarach",
+        "repo": "flakes",
+        "rev": "6c25b97d4a1a4f0be545f20edcfb3bc7d437af89",
+        "type": "github"
+      },
+      "original": {
+        "dir": "dioxus",
+        "owner": "NeilDarach",
+        "repo": "flakes",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1762111121,
@@ -34,23 +57,24 @@
     },
     "root": {
       "inputs": {
+        "dioxus": "dioxus",
         "nixpkgs": "nixpkgs",
-        "nixpkgs-dioxus": "nixpkgs-dioxus",
-        "rust-overlay": "rust-overlay"
+        "nixpkgs-dioxus": "nixpkgs-dioxus"
       }
     },
     "rust-overlay": {
       "inputs": {
         "nixpkgs": [
+          "dioxus",
           "nixpkgs"
         ]
       },
       "locked": {
-        "lastModified": 1762483116,
-        "narHash": "sha256-Z8EVsTH10BjCdFyPxbUu5jBV+HGL39rh9+beQcnNRm0=",
+        "lastModified": 1762915112,
+        "narHash": "sha256-d9j1g8nKmYDHy+/bIOPQTh9IwjRliqaTM0QLHMV92Ic=",
         "owner": "oxalica",
         "repo": "rust-overlay",
-        "rev": "9de55b59b6aaadbd9dbf223765a835239b767ee5",
+        "rev": "aa1e85921cfa04de7b6914982a94621fbec5cc02",
         "type": "github"
       },
       "original": {
