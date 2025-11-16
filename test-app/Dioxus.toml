@@ -1,4 +1,5 @@
 [application]
+ios_info_plist = "Info.plist"
 
 [web.app]
 
@@ -20,5 +21,3 @@ script = []
 # serve: [dev-server] only
 script = []
 
-[bundle]
-icon = ["assets/crib.png"]
