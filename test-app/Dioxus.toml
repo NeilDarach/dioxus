@@ -21,3 +21,5 @@ script = []
 # serve: [dev-server] only
 script = []
 
+[bundle.macos]
+files = { "AppIcon60x60@2x.png" = "assets/AppIcon60x60@2x.png", "AppIcon76x76@2x~ipad.png" = "assets/AppIcon76x76@2x~ipad.png" }
