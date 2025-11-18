@@ -1,0 +1,59 @@
+diff --git a/packages/cli/src/build/request.rs b/packages/cli/src/build/request.rs
+index 1892a1e19..4d008124e 100644
+--- a/packages/cli/src/build/request.rs
++++ b/packages/cli/src/build/request.rs
+@@ -1104,6 +1104,9 @@ impl BuildRequest {
+                 self.write_executable(ctx, &artifacts.exe, &mut artifacts.assets)
+                     .await
+                     .context("Failed to write executable")?;
++                self.write_extra_files(ctx, &artifacts.root_dir)
++                    .await
++                    .context("Failed to copy extra files")?;
+                 self.write_frameworks(ctx, &artifacts.direct_rustc)
+                     .await
+                     .context("Failed to write frameworks")?;
+@@ -1449,6 +1452,23 @@ impl BuildRequest {
+         Ok(())
+     }
+ 
++    async fn write_extra_files(&self, _ctx: &BuildContext, root_dir: &Path) -> Result<()> {
++        if self.bundle == BundleFormat::Ios {
++            tracing::warn!("Copying files into {}", root_dir.display());
++            if let Some(settings) = &self.config.bundle.macos {
++                for (k, v) in &settings.files {
++                    if v.is_file() {
++                        let dest = root_dir.join(k);
++                        tracing::debug!("copying {v:?} to {dest:?}",);
++                        std::fs::copy(v, &dest)
++                            .context("Failed to copy an extra file to output dir ectory")?;
++                    }
++                }
++            }
++        }
++        Ok(())
++    }
++
+     async fn write_frameworks(&self, _ctx: &BuildContext, direct_rustc: &RustcArgs) -> Result<()> {
+         let framework_dir = self.frameworks_folder();
+ 
+diff --git a/packages/cli/src/cli/bundle.rs b/packages/cli/src/cli/bundle.rs
+index ba6f0e9e3..c76c12abc 100644
+--- a/packages/cli/src/cli/bundle.rs
++++ b/packages/cli/src/cli/bundle.rs
+@@ -83,6 +84,16 @@ impl Bundle {
+             // Web/ios can just use their root_dir
+             BundleFormat::Web => bundles.push(client.root_dir()),
+             BundleFormat::Ios => {
++                if let Some(settings) = &client.config.bundle.macos {
++                    for (k, v) in &settings.files {
++                        if v.is_file() {
++                            let dest = client.root_dir().join(k);
++                            tracing::debug!("copying {v:?} to {dest:?}",);
++                            std::fs::copy(v, &dest)
++                                .context("Failed to copy an extra file to output directory")?;
++                        }
++                    }
++                }
+                 tracing::warn!("iOS bundles are not currently codesigned! You will need to codesign the app before distributing.");
+                 bundles.push(client.root_dir())
+             }

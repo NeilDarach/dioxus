@@ -15,13 +15,30 @@
     let
       #This is only valid for Mac installations
       system = "aarch64-darwin";
-      dioxus-0-7 = final: prev: {
-        inherit (nixpkgs-dioxus.legacyPackages.${prev.stdenv.hostPlatform.system})
-          dioxus-cli;
+      dioxus-0-7 = final: prev:
+        let
+          cli =
+            nixpkgs-dioxus.legacyPackages.${prev.stdenv.hostPlatform.system}.dioxus-cli;
+        in {
+          dioxus-cli = cli.overrideAttrs (oldAttrs: {
+            cargoPatches = (oldAttrs.cargoPatches or [ ])
+              ++ [ ./patches/extra_files.patch ];
+          });
+        };
+      dioxus-local = final: prev: {
+        dioxus-cli = final.stdenv.mkDerivation {
+          name = "dioxus-cli";
+          __noChroot = true;
+          buildCommand = ''
+            mkdir -p $out/bin
+            cd $out/bin
+            ln -s "/Users/neil/projects/dx/target/debug/dx" dx
+          '';
+        };
       };
       pkgs = import nixpkgs {
         inherit system;
-        overlays = [ dioxus-0-7 dioxus.overlays.default ];
+        overlays = [ dioxus-local dioxus.overlays.default ];
       };
     in {
       devShells.${system}.default = let applyDioxus = dioxus.addToShell pkgs;
