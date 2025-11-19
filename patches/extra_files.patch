@@ -1,7 +1,19 @@
-diff --git a/packages/cli/src/build/request.rs b/packages/cli/src/build/request.rs
+diff --color=auto -r -u a/src/cli/mod.rs b/src/cli/mod.rs
+--- a/src/cli/mod.rs	2025-11-19 21:12:43
++++ b/src/cli/mod.rs	2025-11-19 21:13:32
+@@ -112,7 +112,7 @@
+ 
+ pub(crate) static VERSION: Lazy<String> = Lazy::new(|| {
+     format!(
+-        "{} ({})",
++        "{} ({}-nd)",
+         crate::dx_build_info::PKG_VERSION,
+         crate::dx_build_info::GIT_COMMIT_HASH_SHORT.unwrap_or("was built without git repository")
+     )
+diff --git a/src/build/request.rs b/src/build/request.rs
 index 1892a1e19..4d008124e 100644
---- a/packages/cli/src/build/request.rs
-+++ b/packages/cli/src/build/request.rs
+--- a/src/build/request.rs
++++ b/src/build/request.rs
 @@ -1104,6 +1104,9 @@ impl BuildRequest {
                  self.write_executable(ctx, &artifacts.exe, &mut artifacts.assets)
                      .await
@@ -18,14 +30,14 @@ index 1892a1e19..4d008124e 100644
  
 +    async fn write_extra_files(&self, _ctx: &BuildContext, root_dir: &Path) -> Result<()> {
 +        if self.bundle == BundleFormat::Ios {
-+            tracing::warn!("Copying files into {}", root_dir.display());
++            tracing::info!("Copying files into {}", root_dir.display());
 +            if let Some(settings) = &self.config.bundle.macos {
 +                for (k, v) in &settings.files {
 +                    if v.is_file() {
 +                        let dest = root_dir.join(k);
-+                        tracing::debug!("copying {v:?} to {dest:?}",);
++                        tracing::info!("write_extra_files: copying {v:?} to {dest:?}",);
 +                        std::fs::copy(v, &dest)
-+                            .context("Failed to copy an extra file to output dir ectory")?;
++                            .context("Failed to copy an extra file to output directory")?;
 +                    }
 +                }
 +            }
@@ -36,10 +48,10 @@ index 1892a1e19..4d008124e 100644
      async fn write_frameworks(&self, _ctx: &BuildContext, direct_rustc: &RustcArgs) -> Result<()> {
          let framework_dir = self.frameworks_folder();
  
-diff --git a/packages/cli/src/cli/bundle.rs b/packages/cli/src/cli/bundle.rs
+diff --git a/src/cli/bundle.rs b/src/cli/bundle.rs
 index ba6f0e9e3..c76c12abc 100644
---- a/packages/cli/src/cli/bundle.rs
-+++ b/packages/cli/src/cli/bundle.rs
+--- a/src/cli/bundle.rs
++++ b/src/cli/bundle.rs
 @@ -83,6 +84,16 @@ impl Bundle {
              // Web/ios can just use their root_dir
              BundleFormat::Web => bundles.push(client.root_dir()),
@@ -48,7 +60,7 @@ index ba6f0e9e3..c76c12abc 100644
 +                    for (k, v) in &settings.files {
 +                        if v.is_file() {
 +                            let dest = client.root_dir().join(k);
-+                            tracing::debug!("copying {v:?} to {dest:?}",);
++                            tracing::info!("bundle: copying {v:?} to {dest:?}",);
 +                            std::fs::copy(v, &dest)
 +                                .context("Failed to copy an extra file to output directory")?;
 +                        }
