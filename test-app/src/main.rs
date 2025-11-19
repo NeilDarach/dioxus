@@ -1,13 +1,15 @@
 use dioxus::prelude::*;
-#[cfg(feature = "mobile")]
-use objc2::MainThreadMarker;
-#[cfg(feature = "mobile")]
-use objc2_ui_kit::UIApplication;
 
 static CSS: Asset = asset!("/assets/main.css");
 
 #[component]
 fn App() -> Element {
+    #[cfg(feature = "mobile")]
+    {
+        let mtm = objc2::MainThreadMarker::new().unwrap();
+        let app = objc2_ui_kit::UIApplication::sharedApplication(mtm);
+        app.setIdleTimerDisabled(true);
+    }
     let mut score_a: Signal<u32> = use_signal(|| 0);
     let mut score_b: Signal<u32> = use_signal(|| 0);
     rsx! {
@@ -48,11 +50,5 @@ fn Reset(scores: Vec<Signal<u32>>, onclick: EventHandler<MouseEvent>) -> Element
 }
 
 fn main() {
-    #[cfg(feature = "mobile")]
-    {
-        let mtm = MainThreadMarker::new().unwrap();
-        let app = UIApplication::sharedApplication(mtm);
-        app.setIdleTimerDisabled(true);
-    }
     dioxus::launch(App);
 }
