@@ -1,5 +1,5 @@
 [package]
-name = "test-app"
+name = "Scoreboard"
 version = "0.1.0"
 authors = ["Neil Darach <neil.darach@gmail.com>"]
 edition = "2021"
