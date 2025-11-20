@@ -4,7 +4,7 @@ ios_info_plist = "Info.plist"
 [web.app]
 
 # HTML title tag content
-title = "test-app"
+title = "Scoreboard"
 
 # include `assets` in web platform
 [web.resource]
@@ -20,6 +20,9 @@ script = []
 # Javascript code file
 # serve: [dev-server] only
 script = []
+
+[bundle]
+identifier = "uk.org.darach.Scoreboard"
 
 [bundle.macos]
 files = { "AppIcon60x60@2x.png" = "assets/AppIcon60x60@2x.png", "AppIcon76x76@2x~ipad.png" = "assets/AppIcon76x76@2x~ipad.png" }
