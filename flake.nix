@@ -30,7 +30,8 @@
       };
     in {
       devShells.${system}.default = let applyDioxus = dioxus.addToShell pkgs;
-      in pkgs.mkShell (applyDioxus { packages = with pkgs; [ just bacon ]; });
+      in pkgs.mkShell
+      (applyDioxus { packages = with pkgs; [ ssh-to-age sops just bacon ]; });
     };
 }
 

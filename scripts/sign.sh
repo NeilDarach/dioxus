@@ -85,7 +85,7 @@ if [[ -n "$3" ]] && [[ -e "$3" ]]; then
     fi
 
     echo "Copy .mobileprovision to app bundle"
-    cp "$3" "$OUTPUT/Payload/$AppBundleName/embedded.mobileprovision" 2>&1
+    cat "$3" >"$OUTPUT/Payload/$AppBundleName/embedded.mobileprovision"
 fi
 
 if [[ -e "$OUTPUT/Payload/$AppBundleName/embedded.mobileprovision" ]]; then
