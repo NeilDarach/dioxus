@@ -1,5 +1,4 @@
 use dioxus::prelude::*;
-
 mod models {
     pub mod scores;
 }
@@ -31,24 +30,32 @@ fn App() -> Element {
     let p2_name = use_memo(move || SCORES.read().player_2_name.clone());
     let p1_score = use_memo(move || SCORES.read().player_1_score);
     let p2_score = use_memo(move || SCORES.read().player_2_score);
+    let p1_prevscore = use_memo(move || SCORES.read().player_1_previous);
+    let p2_prevscore = use_memo(move || SCORES.read().player_2_previous);
     fn update_score(player: Player, action: Action) {
         SCORES.write().update(player, action);
     }
 
     rsx! {
         document::Stylesheet { href: CSS }
-        div { transform: "rotate(180deg)", Counter { name: p2_name, score: p2_score , update_score: move |d| update_score(Player::PlayerTwo,Action::ChangeScore(d))} }
+        div { transform: "rotate(180deg)", Counter { name: p2_name, score: p2_score ,prevscore: p2_prevscore, update_score: move |d| update_score(Player::PlayerTwo,Action::ChangeScore(d))} }
         Reset { onclick: move |_| { SCORES.write().update(Player::PlayerOne,Action::ResetScore); SCORES.write().update(Player::PlayerTwo,Action::ResetScore)}}
-        div { Counter { name: p1_name, score: p1_score , update_score: move |d| update_score(Player::PlayerOne,Action::ChangeScore(d)) } }
+        div { Counter { name: p1_name, score: p1_score,prevscore: p1_prevscore , update_score: move |d| update_score(Player::PlayerOne,Action::ChangeScore(d)) } }
 
     }
 }
 
 #[component]
-fn Counter(name: Memo<String>, score: Memo<u16>, update_score: EventHandler<i16>) -> Element {
+fn Counter(
+    name: Memo<String>,
+    score: Memo<u16>,
+    prevscore: Memo<u16>,
+    update_score: EventHandler<i16>,
+) -> Element {
     rsx! {
            div { class: "title", "{name}"
            br { }
+           span { class: "prevscore", "{prevscore}" }
            span { class: "score", "{score}"}
            br { }
            button { class: "action", onclick: move |_| update_score.call(10), "+10" }

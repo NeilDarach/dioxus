@@ -12,6 +12,7 @@ dependencies = [
  "objc2-ui-kit",
  "serde",
  "toml 0.9.8",
+ "tracing",
 ]
 
 [[package]]

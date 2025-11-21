@@ -16,6 +16,11 @@ div {
     font-size: 200%;
 }
 
+.prevscore {
+    padding-right: 10px;
+    font-size: 75%;
+}
+
 .reset {
     font-size: 200%;
     margin-top: 40px;

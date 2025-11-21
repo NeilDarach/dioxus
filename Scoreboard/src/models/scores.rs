@@ -2,22 +2,35 @@ use directories::BaseDirs;
 use serde::{Deserialize, Serialize};
 use std::fs;
 use std::path::PathBuf;
+use std::time::Instant;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct CribScores {
+    #[serde(default)]
     pub player_1_name: String,
+    #[serde(default)]
     pub player_1_score: u16,
+    #[serde(default)]
+    pub player_1_previous: u16,
+    #[serde(skip)]
+    pub player_1_lastclick: Option<Instant>,
+    #[serde(default)]
     pub player_2_name: String,
+    #[serde(default)]
     pub player_2_score: u16,
+    #[serde(default)]
+    pub player_2_previous: u16,
+    #[serde(skip)]
+    pub player_2_lastclick: Option<Instant>,
 }
 
-#[derive(Eq, PartialEq, Copy, Clone)]
+#[derive(Eq, PartialEq, Copy, Clone, Debug)]
 pub enum Player {
     PlayerOne,
     PlayerTwo,
 }
 
-#[derive(Eq, PartialEq, Clone)]
+#[derive(Eq, PartialEq, Clone, Debug)]
 pub enum Action {
     ResetScore,
     ChangeScore(i16),
@@ -29,8 +42,12 @@ impl Default for CribScores {
         CribScores {
             player_1_name: "Player 1".to_owned(),
             player_1_score: 0,
+            player_1_previous: 0,
+            player_1_lastclick: None,
             player_2_name: "Player 2".to_owned(),
             player_2_score: 0,
+            player_2_previous: 0,
+            player_2_lastclick: None,
         }
     }
 }
@@ -59,48 +76,51 @@ impl CribScores {
         let store_path = get_crib_path();
         if store_path.exists() {
             let data = fs::read(&store_path).expect("Failed to read score file");
-            //let toml = String::from_utf8(data).expect("Score file is not a string");
             Ok(toml::from_slice(&data).expect("Failed to deserialize score file"))
         } else {
             let default = CribScores::default();
-            let toml = toml::to_string(&default).expect("Failed to serialize new score file");
-            fs::write(&store_path, &toml).expect("Failed to write new score file");
+            default.save().expect("Failed to save new default toml");
             Ok(default)
         }
     }
     pub fn update(&mut self, player: Player, action: Action) {
-        match player {
-            Player::PlayerOne => match action {
-                Action::ResetScore => self.player_1_score = 0,
-                Action::ChangeScore(delta) => {
-                    if delta > 0 {
-                        self.player_1_score = 121.min(self.player_1_score + delta as u16)
+        let (name, score, previous, lastclick) = match player {
+            Player::PlayerOne => (
+                &mut self.player_1_name,
+                &mut self.player_1_score,
+                &mut self.player_1_previous,
+                &mut self.player_1_lastclick,
+            ),
+            Player::PlayerTwo => (
+                &mut self.player_2_name,
+                &mut self.player_2_score,
+                &mut self.player_2_previous,
+                &mut self.player_1_lastclick,
+            ),
+        };
+        match action {
+            Action::ResetScore => {
+                *score = 0;
+                *previous = 0;
+            }
+            Action::ChangeScore(delta) => {
+                if delta > 0 {
+                    if let Some(instant) = lastclick {
+                        if instant.elapsed().as_secs() > 2 {
+                            *previous = *score;
+                        }
                     }
-                    if delta < 0 {
-                        self.player_1_score =
-                            self.player_1_score - (delta.unsigned_abs().min(self.player_1_score))
-                    }
+                    *lastclick = Some(Instant::now());
+                    *score = 121.min(*score + delta as u16)
                 }
-                Action::ChangeName(ref name) => {
-                    self.player_1_name = name.clone();
+                if delta < 0 {
+                    *score = *score - (delta.unsigned_abs().min(*score))
                 }
-            },
-            Player::PlayerTwo => match action {
-                Action::ResetScore => self.player_2_score = 0,
-                Action::ChangeScore(delta) => {
-                    if delta > 0 {
-                        self.player_2_score = 121.min(self.player_2_score + delta as u16)
-                    }
-                    if delta < 0 {
-                        self.player_2_score =
-                            self.player_2_score - (delta.unsigned_abs().min(self.player_2_score))
-                    }
-                }
-                Action::ChangeName(ref name) => {
-                    self.player_2_name = name.clone();
-                }
-            },
-        }
+            }
+            Action::ChangeName(ref newname) => {
+                *name = newname.clone();
+            }
+        };
         self.save().expect("Failed to save score");
     }
 
