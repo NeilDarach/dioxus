@@ -19,12 +19,14 @@ fn App() -> Element {
         let app = objc2_ui_kit::UIApplication::sharedApplication(mtm);
         app.setIdleTimerDisabled(true);
     }
-    SCORES
-        .write()
-        .update(Player::PlayerOne, Action::ChangeName("Neil".to_owned()));
-    SCORES
-        .write()
-        .update(Player::PlayerTwo, Action::ChangeName("Marion".to_owned()));
+    /*
+        SCORES
+            .write()
+            .update(Player::PlayerOne, Action::ChangeName("Neil".to_owned()));
+        SCORES
+            .write()
+            .update(Player::PlayerTwo, Action::ChangeName("Marion".to_owned()));
+    */
     let p1_name = use_memo(move || SCORES.read().player_1_name.clone());
     let p2_name = use_memo(move || SCORES.read().player_2_name.clone());
     let p1_score = use_memo(move || SCORES.read().player_1_score);
