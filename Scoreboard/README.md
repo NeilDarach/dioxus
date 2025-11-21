@@ -36,12 +36,8 @@ dx bundle --platform ios --release --device true
 
 To sign the IPA for copying to the phone
 ```bash
-brew install ios-app-signer
-open /Applications/iOS App Signer.app
+../scripts/sign.sh <app dir> <email id> <provisioning profile>
 ```
-Input file: the app - ./target/dx/Scoreboard/release/ios/Scoreboard.app
-Signing Certificate: automatic
-Provisioning Profile: Choose Custom File / ~/Libary/Developer/XCode/UserData/Provisioning Profiles/
 
 Installing on the iphone
 Back in XCode, press cmd-shift-2 to get the device list and drag the ipa file over
