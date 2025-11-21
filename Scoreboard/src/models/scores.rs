@@ -19,6 +19,7 @@ pub enum Player {
 
 #[derive(Eq, PartialEq, Clone)]
 pub enum Action {
+    ResetScore,
     ChangeScore(i16),
     ChangeName(String),
 }
@@ -68,31 +69,37 @@ impl CribScores {
         }
     }
     pub fn update(&mut self, player: Player, action: Action) {
-        match (player, action) {
-            (Player::PlayerOne, Action::ChangeScore(delta)) => {
-                if delta > 0 {
-                    self.player_1_score = 121.min(self.player_1_score + delta as u16)
+        match player {
+            Player::PlayerOne => match action {
+                Action::ResetScore => self.player_1_score = 0,
+                Action::ChangeScore(delta) => {
+                    if delta > 0 {
+                        self.player_1_score = 121.min(self.player_1_score + delta as u16)
+                    }
+                    if delta < 0 {
+                        self.player_1_score =
+                            self.player_1_score - (delta.unsigned_abs().min(self.player_1_score))
+                    }
                 }
-                if delta < 0 {
-                    self.player_1_score =
-                        self.player_1_score - (delta.unsigned_abs().min(self.player_1_score))
+                Action::ChangeName(ref name) => {
+                    self.player_1_name = name.clone();
                 }
-            }
-            (Player::PlayerOne, Action::ChangeName(ref name)) => {
-                self.player_1_name = name.clone();
-            }
-            (Player::PlayerTwo, Action::ChangeScore(delta)) => {
-                if delta > 0 {
-                    self.player_2_score = 121.min(self.player_2_score + delta as u16)
+            },
+            Player::PlayerTwo => match action {
+                Action::ResetScore => self.player_2_score = 0,
+                Action::ChangeScore(delta) => {
+                    if delta > 0 {
+                        self.player_2_score = 121.min(self.player_2_score + delta as u16)
+                    }
+                    if delta < 0 {
+                        self.player_2_score =
+                            self.player_2_score - (delta.unsigned_abs().min(self.player_2_score))
+                    }
                 }
-                if delta < 0 {
-                    self.player_2_score =
-                        self.player_2_score - (delta.unsigned_abs().min(self.player_2_score))
+                Action::ChangeName(ref name) => {
+                    self.player_2_name = name.clone();
                 }
-            }
-            (Player::PlayerTwo, Action::ChangeName(ref name)) => {
-                self.player_2_name = name.clone();
-            }
+            },
         }
         self.save().expect("Failed to save score");
     }

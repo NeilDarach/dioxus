@@ -38,7 +38,7 @@ fn App() -> Element {
     rsx! {
         document::Stylesheet { href: CSS }
         div { transform: "rotate(180deg)", Counter { name: p2_name, score: p2_score , update_score: move |d| update_score(Player::PlayerTwo,Action::ChangeScore(d))} }
-        Reset { onclick: move |_| { SCORES.write().player_1_score = 0; SCORES.write().player_2_score = 0 } }
+        Reset { onclick: move |_| { SCORES.write().update(Player::PlayerOne,Action::ResetScore); SCORES.write().update(Player::PlayerTwo,Action::ResetScore)}}
         div { Counter { name: p1_name, score: p1_score , update_score: move |d| update_score(Player::PlayerOne,Action::ChangeScore(d)) } }
 
     }
