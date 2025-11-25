@@ -9,11 +9,11 @@
       },
       "locked": {
         "dir": "dioxus",
-        "lastModified": 1762952049,
-        "narHash": "sha256-vpazzx8qKFrUo7pI8GKDo50XKzNNtYE8lFH3Skm/OjQ=",
+        "lastModified": 1764052958,
+        "narHash": "sha256-zdJ2ZcijvAAkYNEm8N2ajnXkRy08/LuZrmE96arZzPY=",
         "owner": "NeilDarach",
         "repo": "flakes",
-        "rev": "cc40c577f63bf6c135a8c74584dd8606546de464",
+        "rev": "5567b74cd04f60147ad3c83b833dd8ffbadebc03",
         "type": "github"
       },
       "original": {
@@ -70,11 +70,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1762915112,
-        "narHash": "sha256-d9j1g8nKmYDHy+/bIOPQTh9IwjRliqaTM0QLHMV92Ic=",
+        "lastModified": 1764038373,
+        "narHash": "sha256-M6w2wNBRelcavoDAyFL2iO4NeWknD40ASkH1S3C0YGM=",
         "owner": "oxalica",
         "repo": "rust-overlay",
-        "rev": "aa1e85921cfa04de7b6914982a94621fbec5cc02",
+        "rev": "ab3536fe850211a96673c6ffb2cb88aab8071cc9",
         "type": "github"
       },
       "original": {
