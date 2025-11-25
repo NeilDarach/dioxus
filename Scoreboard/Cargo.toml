@@ -8,8 +8,12 @@ edition = "2021"
 
 [dependencies]
 dioxus = { version = "0.7.1", features = ["router", "fullstack"] }
+directories = "6.0.0"
 objc2 = "0.6.3"
 objc2-ui-kit = "0.3.2"
+serde = "1.0.228"
+toml = "0.9.8"
+tracing = "0.1.41"
 
 [features]
 default = ["mobile"]
