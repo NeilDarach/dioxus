@@ -4,24 +4,22 @@ use std::fs;
 use std::path::PathBuf;
 use std::time::Instant;
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, Deserialize, Clone, Eq, PartialEq)]
 pub struct CribScores {
+    pub player_1: CribScore,
+    pub player_2: CribScore,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone, Eq, PartialEq)]
+pub struct CribScore {
     #[serde(default)]
-    pub player_1_name: String,
+    pub name: String,
     #[serde(default)]
-    pub player_1_score: u16,
+    pub score: u16,
     #[serde(default)]
-    pub player_1_previous: u16,
+    pub previous_score: u16,
     #[serde(skip)]
-    pub player_1_lastclick: Option<Instant>,
-    #[serde(default)]
-    pub player_2_name: String,
-    #[serde(default)]
-    pub player_2_score: u16,
-    #[serde(default)]
-    pub player_2_previous: u16,
-    #[serde(skip)]
-    pub player_2_lastclick: Option<Instant>,
+    pub lastclick: Option<Instant>,
 }
 
 #[derive(Eq, PartialEq, Copy, Clone, Debug)]
@@ -40,14 +38,18 @@ pub enum Action {
 impl Default for CribScores {
     fn default() -> Self {
         CribScores {
-            player_1_name: "Player 1".to_owned(),
-            player_1_score: 0,
-            player_1_previous: 0,
-            player_1_lastclick: None,
-            player_2_name: "Player 2".to_owned(),
-            player_2_score: 0,
-            player_2_previous: 0,
-            player_2_lastclick: None,
+            player_1: CribScore {
+                name: "Player 1".to_owned(),
+                score: 0,
+                previous_score: 0,
+                lastclick: None,
+            },
+            player_2: CribScore {
+                name: "Player 2".to_owned(),
+                score: 0,
+                previous_score: 0,
+                lastclick: None,
+            },
         }
     }
 }
@@ -76,49 +78,41 @@ impl CribScores {
         let store_path = get_crib_path();
         if store_path.exists() {
             let data = fs::read(&store_path).expect("Failed to read score file");
-            Ok(toml::from_slice(&data).expect("Failed to deserialize score file"))
-        } else {
-            let default = CribScores::default();
-            default.save().expect("Failed to save new default toml");
-            Ok(default)
+            if let Ok(scores) = toml::from_slice(&data) {
+                return Ok(scores);
+            }
         }
+
+        let default = CribScores::default();
+        default.save().expect("Failed to save new default toml");
+        Ok(default)
     }
     pub fn update(&mut self, player: Player, action: Action) {
-        let (name, score, previous, lastclick) = match player {
-            Player::PlayerOne => (
-                &mut self.player_1_name,
-                &mut self.player_1_score,
-                &mut self.player_1_previous,
-                &mut self.player_1_lastclick,
-            ),
-            Player::PlayerTwo => (
-                &mut self.player_2_name,
-                &mut self.player_2_score,
-                &mut self.player_2_previous,
-                &mut self.player_1_lastclick,
-            ),
+        let score = match player {
+            Player::PlayerOne => &mut self.player_1,
+            Player::PlayerTwo => &mut self.player_2,
         };
         match action {
             Action::ResetScore => {
-                *score = 0;
-                *previous = 0;
+                score.score = 0;
+                score.previous_score = 0;
             }
             Action::ChangeScore(delta) => {
                 if delta > 0 {
-                    if let Some(instant) = lastclick {
+                    if let Some(instant) = score.lastclick {
                         if instant.elapsed().as_secs() > 2 {
-                            *previous = *score;
+                            score.previous_score = score.score;
                         }
                     }
-                    *lastclick = Some(Instant::now());
-                    *score = 121.min(*score + delta as u16)
+                    score.lastclick = Some(Instant::now());
+                    score.score = 121.min(score.score + delta as u16)
                 }
                 if delta < 0 {
-                    *score = *score - (delta.unsigned_abs().min(*score))
+                    score.score -= delta.unsigned_abs().min(score.score);
                 }
             }
             Action::ChangeName(ref newname) => {
-                *name = newname.clone();
+                score.name = newname.clone();
             }
         };
         self.save().expect("Failed to save score");

@@ -3,7 +3,7 @@ mod models {
     pub mod scores;
 }
 
-use crate::models::scores::{Action, CribScores, Player};
+use crate::models::scores::{Action, CribScore, CribScores, Player};
 
 static CSS: Asset = asset!("/assets/main.css");
 static SCORES: GlobalSignal<CribScores> =
@@ -26,44 +26,34 @@ fn App() -> Element {
             .write()
             .update(Player::PlayerTwo, Action::ChangeName("Marion".to_owned()));
     */
-    let p1_name = use_memo(move || SCORES.read().player_1_name.clone());
-    let p2_name = use_memo(move || SCORES.read().player_2_name.clone());
-    let p1_score = use_memo(move || SCORES.read().player_1_score);
-    let p2_score = use_memo(move || SCORES.read().player_2_score);
-    let p1_prevscore = use_memo(move || SCORES.read().player_1_previous);
-    let p2_prevscore = use_memo(move || SCORES.read().player_2_previous);
+    let p1 = use_memo(move || (SCORES.read().player_1).clone());
+    let p2 = use_memo(move || (SCORES.read().player_2).clone());
     fn update_score(player: Player, action: Action) {
         SCORES.write().update(player, action);
     }
 
     rsx! {
         document::Stylesheet { href: CSS }
-        div { transform: "rotate(180deg)", Counter { name: p2_name, score: p2_score ,prevscore: p2_prevscore, update_score: move |d| update_score(Player::PlayerTwo,Action::ChangeScore(d))} }
+        div { transform: "rotate(180deg)", Counter { player: p2, update_score: move |d| update_score(Player::PlayerTwo,Action::ChangeScore(d))} }
         Reset { onclick: move |_| { SCORES.write().update(Player::PlayerOne,Action::ResetScore); SCORES.write().update(Player::PlayerTwo,Action::ResetScore)}}
-        div { Counter { name: p1_name, score: p1_score,prevscore: p1_prevscore , update_score: move |d| update_score(Player::PlayerOne,Action::ChangeScore(d)) } }
+        div { Counter { player: p1, update_score: move |d| update_score(Player::PlayerOne,Action::ChangeScore(d)) } }
 
     }
 }
 
 #[component]
-fn Counter(
-    name: Memo<String>,
-    score: Memo<u16>,
-    prevscore: Memo<u16>,
-    update_score: EventHandler<i16>,
-) -> Element {
+fn Counter(player: Memo<CribScore>, update_score: EventHandler<i16>) -> Element {
     rsx! {
-           div { class: "title", "{name}"
+           div { class: "title", "{player().name}" }
            br { }
-           span { class: "prevscore", "{prevscore}" }
-           span { class: "score", "{score}"}
+           span { class: "prevscore", "{player().previous_score}" }
+           span { class: "score", "{player().score}"}
            br { }
            button { class: "action", onclick: move |_| update_score.call(10), "+10" }
            button { class: "action", onclick: move |_| update_score.call(5), "+5" }
            button { class: "action", onclick: move |_| update_score.call(1), "+1" }
            button { class: "action", onclick: move |_| update_score.call(-1), "-1" }
     }
-       }
 }
 
 #[component]
