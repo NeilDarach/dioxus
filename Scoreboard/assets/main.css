@@ -35,6 +35,6 @@ div {
     margin-top: 20px;
 }
 
-.title {
+.title, .title input {
     font-size: 130%;
 }

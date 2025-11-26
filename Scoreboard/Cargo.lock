@@ -7,12 +7,14 @@ name = "Scoreboard"
 version = "0.1.0"
 dependencies = [
  "dioxus",
+ "dioxus-gestures",
  "directories",
  "objc2",
  "objc2-ui-kit",
  "serde",
  "toml 0.9.8",
  "tracing",
+ "uuid",
 ]
 
 [[package]]
@@ -1150,6 +1152,18 @@ dependencies = [
  "quote",
  "syn 2.0.108",
  "xxhash-rust",
+]
+
+[[package]]
+name = "dioxus-gestures"
+version = "0.2.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "dab336b54a4f25d2bf4a5a11449d93cebf174a776b1a061f978bd4d738c5b266"
+dependencies = [
+ "dioxus",
+ "getrandom 0.2.16",
+ "nanoid",
+ "paste",
 ]
 
 [[package]]
@@ -3103,6 +3117,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "nanoid"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3ffa00dec017b5b1a8b7cf5e2c008bfda1aa7e0697ac1508b491fdf2622fb4d8"
+dependencies = [
+ "rand 0.8.5",
+]
+
+[[package]]
 name = "native-tls"
 version = "0.2.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3543,6 +3566,12 @@ dependencies = [
  "smallvec",
  "windows-link 0.2.1",
 ]
+
+[[package]]
+name = "paste"
+version = "1.0.15"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "57c0d7b74b563b49d38dae00a0c37d4d6de9b432382b2892f0574ddcae73fd0a"
 
 [[package]]
 name = "percent-encoding"
@@ -5409,6 +5438,7 @@ version = "1.18.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2f87b8aa10b915a06587d0dec516c282ff295b475d94abf425d62b57710070a2"
 dependencies = [
+ "getrandom 0.3.4",
  "js-sys",
  "serde",
  "wasm-bindgen",
